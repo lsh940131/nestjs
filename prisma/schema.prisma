@@ -7,10 +7,10 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:admin@localhost:3306/init"
+  url      = "mysql://root:admin@localhost:3306/nest"
 }
 
-model User {
+model user {
   id    Int    @id @default(autoincrement())
   email String @unique
   name  String

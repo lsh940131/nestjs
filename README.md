@@ -1,5 +1,11 @@
 nestjs + swagger + prisma + jest + docker + jenkins
 
+## nest cli
+
+> nest g controller
+> nest g service
+> https://www.prisma.io/docs/concepts/components/prisma-migrate/migrate-development-production
+
 ## prisma
 
 ### install
