@@ -17,6 +17,8 @@ export class UserService {
       return result.id;
     } catch (e) {
       console.log(e);
+
+      throw e;
     } finally {
       await prisma.$disconnect();
     }
