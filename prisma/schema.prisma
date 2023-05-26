@@ -11,7 +11,15 @@ datasource db {
 }
 
 model user {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  name         String
+  upload_image upload_image[]
+}
+
+model upload_image {
+  id      Int    @id @default(autoincrement())
+  user    user   @relation(fields: [user_id], references: [id])
+  user_id Int
+  link    String
 }
