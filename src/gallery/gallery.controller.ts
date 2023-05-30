@@ -1,17 +1,18 @@
-import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles } from "@nestjs/common";
+import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, Body, Request } from "@nestjs/common";
 import { FileInterceptor, FileFieldsInterceptor } from "@nestjs/platform-express";
 import { multerOptions } from "../config/multer.option";
-import { multer } from "../middlewares/multer";
+
+import { MulterInterceptor } from "../interceptor/multer.interceptor";
 
 @Controller("gallery")
 export class GalleryController {
 	constructor() {}
 
 	@Post("/upload/single")
-	@UseInterceptors(multer)
+	@UseInterceptors(new MulterInterceptor("image"))
 	// @UseInterceptors(FileInterceptor("file", multerOptions))
-	async upload(@UploadedFile() file: Express.Multer.File) {
-		console.log(file);
+	async upload(@UploadedFile() file: Express.Multer.File, @Request() req) {
+		console.log({ file });
 
 		return true;
 	}
