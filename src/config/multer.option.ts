@@ -3,14 +3,6 @@ import { existsSync, mkdirSync } from "fs";
 import { diskStorage } from "multer";
 
 export const multerOptions = {
-	fileFilter: (request, file, callback) => {
-		if (file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-			callback(null, true);
-		} else {
-			callback(new UnsupportedMediaTypeException("Invalid file format."), false);
-		}
-	},
-
 	storage: diskStorage({
 		destination: (request, file, callback) => {
 			const uploadPath: string = "uploads";
