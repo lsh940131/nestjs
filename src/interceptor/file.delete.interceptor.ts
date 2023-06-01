@@ -1,39 +1,51 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from "@nestjs/common";
-import { Observable } from "rxjs";
+import { Observable, tap } from "rxjs";
 import { Request } from "express";
 import { unlink } from "fs";
 
 /**
- * 서비스 로직을 완료한 파일 삭제
+ * Delete files that have completed service logic
  */
 @Injectable()
 export class FileDeleteInterceptor implements NestInterceptor {
 	intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-		console.log(" >> FileDeleteInterceptor");
+		// Execute the logic before going to the controller
+		// nothing();
 
-		const req = context.switchToHttp().getRequest();
+		// Callhanler is executed after completing the service logic
+		return next.handle().pipe(
+			tap({
+				next: (): void => {
+					const req = context.switchToHttp().getRequest();
+					const files = this.getFiles(req);
 
-		const files = this.getFiles(req);
-		console.log({ files });
-		for (let file of files) {
-			unlink(file.path, (err) => {
-				if (err) {
-					console.log(err);
-					return err;
-				}
-			});
-		}
-
-		return next.handle();
+					for (let file of files) {
+						unlink(file.path, (err) => {
+							if (err) {
+								console.log(` >> FileDeleteInterceptor unlink error: ${err}`);
+								return err;
+							}
+						});
+					}
+				},
+				error: (err: Error): void => {
+					// do nothing
+				},
+			}),
+		);
 	}
 
 	getFiles(req: Request): Express.Multer.File[] {
+		const arr = [];
+
 		if (req.files) {
-			return [].concat(req.files);
+			for (let field in req.files) {
+				arr.push(...req.files[field]);
+			}
 		} else if (req.file) {
-			return [req.file];
-		} else {
-			return [];
+			arr.push(req.file);
 		}
+
+		return arr;
 	}
 }

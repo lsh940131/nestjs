@@ -1,4 +1,3 @@
-import { UnsupportedMediaTypeException } from "@nestjs/common";
 import { existsSync, mkdirSync } from "fs";
 import { diskStorage } from "multer";
 

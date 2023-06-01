@@ -1,19 +1,18 @@
 import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, Body, Request, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from "@nestjs/common";
 import { FileInterceptor, FileFieldsInterceptor } from "@nestjs/platform-express";
+import { GalleryService } from "./gallery.service";
 import { multerOptions } from "../config/multer.option";
 import { FileDeleteInterceptor } from "../interceptor/file.delete.interceptor";
-import { GalleryService } from "./gallery.service";
 @Controller("gallery")
 export class GalleryController {
 	constructor(private readonly galleryService: GalleryService) {}
 
 	@Post("/upload/single")
-	@UseInterceptors(FileInterceptor("file", multerOptions))
-	async uploadMulter(
+	@UseInterceptors(FileInterceptor("file", multerOptions), FileDeleteInterceptor)
+	async uploadSingle(
 		@UploadedFile(new ParseFilePipe({ validators: [new MaxFileSizeValidator({ maxSize: 100000 }), new FileTypeValidator({ fileType: /(jpg|jpeg|png)$/ })] })) file: Express.Multer.File,
 	) {
-		console.log(" >> gallery controller");
-		console.log({ file });
+		console.log("/upload/single");
 
 		this.galleryService.upload();
 
@@ -29,14 +28,15 @@ export class GalleryController {
 			],
 			multerOptions,
 		),
+		FileDeleteInterceptor,
 	)
-	uploadFile(
+	uploadMulti(
 		@UploadedFiles()
 		files: {
 			avatar?: Express.Multer.File[];
 			background?: Express.Multer.File[];
 		},
 	) {
-		console.log(files);
+		console.log("/upload/multi");
 	}
 }
