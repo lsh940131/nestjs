@@ -1,41 +1,50 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from "@nestjs/common";
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, OnModuleInit } from "@nestjs/common";
 import { tap } from "rxjs";
 import { Request } from "express";
-
-import * as multer from "multer";
 import { existsSync, mkdirSync, unlink } from "fs";
+import * as multer from "multer";
+import typia from "typia";
+
+type uploader = multer.Multer;
+interface Imulter {
+	/**
+	 * @pattern ^(single|array|fields|any|none)$
+	 */
+	type: string;
+}
 
 /**
  * Delete files that have completed service logic
  */
 @Injectable()
-export class MulterInterceptor implements NestInterceptor {
-	option = {
-		storage: multer.diskStorage({
-			destination: (request, file, callback) => {
-				const uploadPath: string = "uploads";
+export class MulterInterceptor implements NestInterceptor, OnModuleInit {
+	uploadPath: string = "uploads";
+	uploader: uploader;
 
-				if (!existsSync(uploadPath)) {
-					mkdirSync(uploadPath);
-				}
+	onModuleInit() {
+		if (!existsSync(this.uploadPath)) {
+			mkdirSync(this.uploadPath);
+		}
+	}
 
-				callback(null, uploadPath);
-			},
-			filename: (request, file, callback) => {
-				callback(null, file.originalname);
-			},
-		}),
-	};
+	constructor(init: { type: string }) {
+		const validated: typia.IValidation<Imulter> = typia.validate<Imulter>(init);
+		if (!validated.success) {
+			console.log(" >> typia validate error !");
+		}
+
+		this.uploader = multer({ dest: this.uploadPath })[init.type];
+	}
 
 	async intercept(context: ExecutionContext, next: CallHandler): Promise<any> {
 		// Execute the logic before going to the controller
-
 		const req = context.switchToHttp().getRequest();
 		const res = context.switchToHttp().getResponse();
 
-		console.log(req.file);
-		const uploader = multer(this.option).single("file");
-		const r = await new Promise((resolve, reject) => {
+		const uploader = multer({
+			dest: this.uploadPath,
+		}).single("file");
+		await new Promise((resolve, reject) => {
 			uploader(req, res, (err: any) => {
 				if (err) {
 					reject(err);
@@ -44,10 +53,6 @@ export class MulterInterceptor implements NestInterceptor {
 				resolve(true);
 			});
 		});
-
-		console.log("==================================");
-		console.log(r);
-		console.log(req.file);
 
 		// Callhanler is executed after completing the service logic
 		return next.handle().pipe(

@@ -42,7 +42,7 @@ export class GalleryController {
 	}
 
 	@TypedRoute.Post("/upload/test")
-	@UseInterceptors(MulterInterceptor)
+	@UseInterceptors(new MulterInterceptor({ type: "single" }))
 	public test(@Request() req, @Body() body: { file: Express.Multer.File }) {
 		console.log(" >> controller");
 		console.log(body);
