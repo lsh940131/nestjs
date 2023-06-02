@@ -36,7 +36,7 @@ export class FileDeleteInterceptor implements NestInterceptor {
 	}
 
 	getFiles(req: Request): Express.Multer.File[] {
-		const arr = [];
+		const arr: Express.Multer.File[] = [];
 
 		if (req.files) {
 			for (let field in req.files) {
