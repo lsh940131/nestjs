@@ -1,25 +1,19 @@
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler, OnModuleInit } from "@nestjs/common";
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, OnModuleInit, BadRequestException } from "@nestjs/common";
 import { tap } from "rxjs";
-import { Request } from "express";
+import { Request, RequestHandler } from "express";
 import { existsSync, mkdirSync, unlink } from "fs";
 import * as multer from "multer";
-import typia from "typia";
-
-type uploader = multer.Multer;
-interface Imulter {
-	/**
-	 * @pattern ^(single|array|fields|any|none)$
-	 */
-	type: string;
-}
 
 /**
  * Delete files that have completed service logic
  */
 @Injectable()
 export class MulterInterceptor implements NestInterceptor, OnModuleInit {
-	uploadPath: string = "uploads";
-	uploader: uploader;
+	private uploadPath: string = "uploads";
+	private multer: multer.Multer;
+	private uploader: RequestHandler;
+	private fieldname: string;
+	private names: string[];
 
 	onModuleInit() {
 		if (!existsSync(this.uploadPath)) {
@@ -27,13 +21,26 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		}
 	}
 
-	constructor(init: { type: string }) {
-		const validated: typia.IValidation<Imulter> = typia.validate<Imulter>(init);
-		if (!validated.success) {
-			console.log(" >> typia validate error !");
-		}
+	constructor() {
+		this.multer = multer({ dest: this.uploadPath });
+	}
 
-		this.uploader = multer({ dest: this.uploadPath })[init.type];
+	single(fieldname: string) {
+		this.fieldname = fieldname;
+		this.uploader = this.multer.single(fieldname);
+		return this;
+	}
+
+	array(fieldname: string, maxCount?: number) {
+		this.fieldname = fieldname;
+		this.uploader = this.multer.array(fieldname, maxCount);
+		return this;
+	}
+
+	fields(fields: { name: string; maxCount?: number }[]) {
+		this.names = fields.map((field) => field.name);
+		this.uploader = this.multer.fields(fields);
+		return this;
 	}
 
 	async intercept(context: ExecutionContext, next: CallHandler): Promise<any> {
@@ -41,18 +48,26 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		const req = context.switchToHttp().getRequest();
 		const res = context.switchToHttp().getResponse();
 
-		const uploader = multer({
-			dest: this.uploadPath,
-		}).single("file");
-		await new Promise((resolve, reject) => {
-			uploader(req, res, (err: any) => {
-				if (err) {
-					reject(err);
-				}
-				req.body.file = req.file;
-				resolve(true);
+		try {
+			await new Promise((resolve, reject) => {
+				this.uploader(req, res, (err: any) => {
+					if (err) {
+						reject(err);
+					}
+					resolve(true);
+				});
 			});
-		});
+		} catch (e) {
+			throw new BadRequestException("Bad Request", { description: e });
+		}
+
+		if (this.fieldname) {
+			req.body[this.fieldname] = req.file;
+		} else if (this.names && req.files) {
+			for (let name of this.names) {
+				req.body[name] = req.files[name];
+			}
+		}
 
 		// Callhanler is executed after completing the service logic
 		return next.handle().pipe(

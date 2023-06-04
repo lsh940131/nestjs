@@ -41,9 +41,18 @@ export class GalleryController {
 		console.log("/upload/multi");
 	}
 
-	@TypedRoute.Post("/upload/test")
-	@UseInterceptors(new MulterInterceptor({ type: "single" }))
-	public test(@Request() req, @Body() body: { file: Express.Multer.File }) {
+	@TypedRoute.Post("/upload/test/single")
+	@UseInterceptors(new MulterInterceptor().single("image"))
+	public testSingle(@Request() req, @Body() body) {
+		console.log(" >> controller");
+		console.log(body);
+
+		return true;
+	}
+
+	@TypedRoute.Post("/upload/test/fields")
+	@UseInterceptors(new MulterInterceptor().fields([{ name: "file", maxCount: 2 }]))
+	public testMulti(@Request() req, @Body() body) {
 		console.log(" >> controller");
 		console.log(body);
 
