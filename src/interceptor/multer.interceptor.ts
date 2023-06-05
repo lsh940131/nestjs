@@ -5,7 +5,8 @@ import { existsSync, mkdirSync, unlink } from "fs";
 import * as multer from "multer";
 
 /**
- * Delete files that have completed service logic
+ * simple multer interceptor
+ * finally delete uploaded files after service logic
  */
 @Injectable()
 export class MulterInterceptor implements NestInterceptor, OnModuleInit {
@@ -49,12 +50,12 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		const res = context.switchToHttp().getResponse();
 
 		try {
-			await new Promise((resolve, reject) => {
+			await new Promise<void>((resolve, reject) => {
 				this.uploader(req, res, (err: any) => {
 					if (err) {
 						reject(err);
 					}
-					resolve(true);
+					resolve();
 				});
 			});
 		} catch (e) {
