@@ -3,6 +3,13 @@ import { tap } from "rxjs";
 import { Request, RequestHandler } from "express";
 import { existsSync, mkdirSync, unlink } from "fs";
 import * as multer from "multer";
+import { extname } from "path";
+
+interface option {
+	name: string;
+	maxCount?: number;
+	filter?: string[];
+}
 
 /**
  * simple multer interceptor
@@ -11,10 +18,9 @@ import * as multer from "multer";
 @Injectable()
 export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 	private uploadPath: string = "uploads";
-	private multer: multer.Multer;
 	private uploader: RequestHandler;
-	private fieldname: string;
-	private names: string[];
+	private uploaderType: string;
+	options: option[];
 
 	onModuleInit() {
 		if (!existsSync(this.uploadPath)) {
@@ -22,26 +28,59 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		}
 	}
 
-	constructor() {
-		this.multer = multer({ dest: this.uploadPath });
-	}
+	constructor() {}
 
-	single(fieldname: string) {
-		this.fieldname = fieldname;
-		this.uploader = this.multer.single(fieldname);
+	single(option: option) {
+		this.uploaderType = "single";
+		this.options = [option];
+
+		this.uploader = multer({
+			dest: this.uploadPath,
+			fileFilter: this.fileFilter(this.options),
+		}).single(option.name);
+
 		return this;
 	}
 
-	array(fieldname: string, maxCount?: number) {
-		this.fieldname = fieldname;
-		this.uploader = this.multer.array(fieldname, maxCount);
+	array(option: option) {
+		this.uploaderType = "array";
+		this.options = [option];
+
+		this.uploader = multer({
+			dest: this.uploadPath,
+			fileFilter: this.fileFilter(this.options),
+		}).array(option.name, option.maxCount);
+
 		return this;
 	}
 
-	fields(fields: { name: string; maxCount?: number }[]) {
-		this.names = fields.map((field) => field.name);
-		this.uploader = this.multer.fields(fields);
+	fields(options: option[]) {
+		this.uploaderType = "fields";
+		this.options = options;
+
+		this.uploader = multer({
+			dest: this.uploadPath,
+			fileFilter: this.fileFilter(this.options),
+		}).fields(options.map((opt) => ({ name: opt.name, maxCount: opt.maxCount })));
+
 		return this;
+	}
+
+	fileFilter(options: option[]) {
+		return (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+			const [option] = options.filter((option) => option.name == file.fieldname);
+			if (option?.filter) {
+				const regexp = new RegExp(option.filter.join("|"));
+
+				const ext = regexp.test(extname(file.originalname));
+				const mimetype = regexp.test(file.mimetype);
+				if (ext && mimetype) {
+					return cb(null, true);
+				} else {
+					return cb(new Error("INVALID_FILE_EXTENSION"));
+				}
+			}
+		};
 	}
 
 	async intercept(context: ExecutionContext, next: CallHandler): Promise<any> {
@@ -53,7 +92,7 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 			await new Promise<void>((resolve, reject) => {
 				this.uploader(req, res, (err: any) => {
 					if (err) {
-						reject(err);
+						reject(err.toString());
 					}
 					resolve();
 				});
@@ -62,12 +101,17 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 			throw new BadRequestException("Bad Request", { description: e });
 		}
 
-		if (this.fieldname) {
-			req.body[this.fieldname] = req.file;
-		} else if (this.names && req.files) {
-			for (let name of this.names) {
-				req.body[name] = req.files[name];
-			}
+		switch (this.uploaderType) {
+			case "single":
+				req.body[this.options[0].name] = req.file;
+				break;
+			case "fields":
+				if (req.files) {
+					for (let option of this.options) {
+						req.body[option.name] = req.files[option.name];
+					}
+				}
+				break;
 		}
 
 		// Callhanler is executed after completing the service logic

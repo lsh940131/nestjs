@@ -41,7 +41,7 @@ export class GalleryController {
 	}
 
 	@TypedRoute.Post("/upload/test/single")
-	@UseInterceptors(new MulterInterceptor().single("image"))
+	@UseInterceptors(new MulterInterceptor().single({ name: "image", filter: ["jpg", "jpeg"] }))
 	public testSingle(@Request() req, @Body() body) {
 		console.log(" >> controller");
 		console.log(body);
