@@ -105,6 +105,11 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 			case "single":
 				req.body[this.options[0].name] = req.file;
 				break;
+
+			case "array":
+				req.body[this.options[0].name] = req.files;
+				break;
+
 			case "fields":
 				if (req.files) {
 					for (let option of this.options) {
@@ -140,8 +145,15 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		const arr: Express.Multer.File[] = [];
 
 		if (req.files) {
-			for (let field in req.files) {
-				arr.push(...req.files[field]);
+			// req.files's type is array
+			if (this.uploaderType == "array") {
+				for (let i in req.files) arr.push(req.files[i]);
+			}
+			// // req.files's type is json
+			else if (this.uploaderType == "fields") {
+				for (let field in req.files) {
+					arr.push(...req.files[field]);
+				}
 			}
 		} else if (req.file) {
 			arr.push(req.file);

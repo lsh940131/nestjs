@@ -49,8 +49,17 @@ export class GalleryController {
 		return true;
 	}
 
+	@TypedRoute.Post("/upload/test/array")
+	@UseInterceptors(new MulterInterceptor().array({ name: "image", maxCount: 2, filter: ["jpg", "jpeg"] }))
+	public testArray(@Request() req, @Body() body) {
+		console.log(" >> controller");
+		console.log(body);
+
+		return true;
+	}
+
 	@TypedRoute.Post("/upload/test/fields")
-	@UseInterceptors(new MulterInterceptor().fields([{ name: "file", maxCount: 2 }]))
+	@UseInterceptors(new MulterInterceptor().fields([{ name: "image", maxCount: 2 }]))
 	public testMulti(@Request() req, @Body() body) {
 		console.log(" >> controller");
 		console.log(body);
