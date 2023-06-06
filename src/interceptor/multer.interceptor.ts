@@ -20,15 +20,15 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 	private uploadPath: string = "uploads";
 	private uploader: RequestHandler;
 	private uploaderType: string;
-	options: option[];
+	private options: option[];
+
+	constructor() {}
 
 	onModuleInit() {
 		if (!existsSync(this.uploadPath)) {
 			mkdirSync(this.uploadPath);
 		}
 	}
-
-	constructor() {}
 
 	single(option: option) {
 		this.uploaderType = "single";
@@ -66,7 +66,7 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		return this;
 	}
 
-	fileFilter(options: option[]) {
+	private fileFilter(options: option[]) {
 		return (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
 			const [option] = options.filter((option) => option.name == file.fieldname);
 			if (option?.filter) {
@@ -141,7 +141,7 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		);
 	}
 
-	getFiles(req: Request): Express.Multer.File[] {
+	private getFiles(req: Request): Express.Multer.File[] {
 		const arr: Express.Multer.File[] = [];
 
 		if (req.files) {
