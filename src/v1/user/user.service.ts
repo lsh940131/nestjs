@@ -29,4 +29,20 @@ export class UserService {
 			await prisma.$disconnect();
 		}
 	}
+
+	async get({ id }): Promise<any> {
+		const prisma = new PrismaClient();
+
+		try {
+			const result = await prisma.user.findUnique({ where: { id: id } });
+
+			return result;
+		} catch (e) {
+			console.log(e);
+
+			throw e;
+		} finally {
+			await prisma.$disconnect();
+		}
+	}
 }
