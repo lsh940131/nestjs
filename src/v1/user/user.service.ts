@@ -1,26 +1,32 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaClient, Prisma } from '@prisma/client';
-
+import { Injectable } from "@nestjs/common";
+import { PrismaClient, Prisma } from "@prisma/client";
+import { ConfigService } from "@nestjs/config";
 @Injectable()
 export class UserService {
-  async create({ email, name }): Promise<number> {
-    const prisma = new PrismaClient();
+	constructor(private readonly config: ConfigService) {
+		// console.log(process.env);
+		// console.log(process.env.PRISMA_DATABASE_URL);
+		// console.log(config.get("PRISMA_DATABASE_URL"));
+	}
 
-    try {
-      const user = {
-        email,
-        name,
-      };
+	async create({ email, name }): Promise<number> {
+		const prisma = new PrismaClient();
 
-      const result = await prisma.user.create({ data: user });
+		try {
+			const user = {
+				email,
+				name,
+			};
 
-      return result.id;
-    } catch (e) {
-      console.log(e);
+			const result = await prisma.user.create({ data: user });
 
-      throw e;
-    } finally {
-      await prisma.$disconnect();
-    }
-  }
+			return result.id;
+		} catch (e) {
+			console.log(e);
+
+			throw e;
+		} finally {
+			await prisma.$disconnect();
+		}
+	}
 }
