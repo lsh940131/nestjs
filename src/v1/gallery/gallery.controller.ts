@@ -1,8 +1,8 @@
 import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, Body, Request, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from "@nestjs/common";
 import { FileInterceptor, FileFieldsInterceptor } from "@nestjs/platform-express";
 import { GalleryService } from "./gallery.service";
-import { multerOptions } from "../config/multer.option";
-import { MulterInterceptor } from "../interceptor";
+import { multerOptions } from "../../config/multer.option";
+import { MulterInterceptor } from "../../interceptor";
 import { TypedRoute } from "@nestia/core";
 @Controller("gallery")
 export class GalleryController {
