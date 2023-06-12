@@ -1,24 +1,13 @@
-import { ConfigService } from "@nestjs/config";
 import * as mysql from "mysql2/promise";
 
 export class Transaction {
-	private pool: mysql.Pool;
 	private connection: mysql.PoolConnection;
 
-	constructor(private readonly config: ConfigService) {
-		const poolConfig = {
-			connectionLimit: config.get("MYSQL_CONNECTIONLIMIT"),
-			host: config.get("MSQYL_HOST"),
-			user: config.get("MSQYL_USER"),
-			password: config.get("MSQYL_PASSWORD"),
-			database: config.get("MSQYL_DATABASE"),
-			enableKeepAlive: config.get("MSQYL_ENABLEKEEPALIVE"),
-		};
-		this.pool = mysql.createPool(poolConfig);
+	constructor(connection: mysql.PoolConnection) {
+		this.connection = connection;
 	}
 
 	async begin() {
-		this.connection = await this.pool.getConnection();
 		await this.connection.beginTransaction();
 	}
 
