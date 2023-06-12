@@ -34,4 +34,19 @@ export class Mysql implements OnModuleInit {
 
 		return tx;
 	}
+
+	async query(sql: string, values?: any | any[]) {
+		const connection = await this.pool.getConnection();
+
+		try {
+			const [result] = await connection.query(sql, values);
+
+			return result;
+		} catch (e) {
+			await connection.rollback();
+			throw e;
+		} finally {
+			connection.release();
+		}
+	}
 }

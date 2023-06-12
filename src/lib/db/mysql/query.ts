@@ -18,7 +18,7 @@ export class Transaction {
 			return result;
 		} catch (e) {
 			await this.connection.rollback();
-			this.connection.release();
+			await this.connection.release();
 
 			throw e;
 		}
