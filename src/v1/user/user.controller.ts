@@ -35,4 +35,14 @@ export class UserController {
 		// return result;
 		return 1;
 	}
+
+	@Get("/query")
+	@ApiOperation({ summary: "유저 조회", description: "유저 조회" })
+	@ApiCreatedResponse({ description: "유저 조회", type: Object })
+	async getUserQuery(@Query() query: UserReadDto): Promise<Object> {
+		const result = await this.mysql.query("select * from user");
+		console.log(result);
+
+		return 1;
+	}
 }

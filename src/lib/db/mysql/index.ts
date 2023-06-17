@@ -41,6 +41,8 @@ export class Mysql implements OnModuleInit {
 		try {
 			const [result] = await connection.query(sql, values);
 
+			await connection.commit();
+
 			return result;
 		} catch (e) {
 			await connection.rollback();
