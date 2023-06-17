@@ -2,9 +2,9 @@ nestjs + swagger + prisma + jest + docker + jenkins
 
 ## nest cli
 
-> nest g controller
-> nest g service
-> https://www.prisma.io/docs/concepts/components/prisma-migrate/migrate-development-production
+1. npm i @nestjs/cli
+2. nest generate \<schematic> \<path/name> [options]  
+   `nest g co v1/test`
 
 ## prisma
 
@@ -19,4 +19,7 @@ nestjs + swagger + prisma + jest + docker + jenkins
 1. set db url in schema.prisma
 2. write the models
 3. npx prisma migrate dev --name init
-   > tables are created according to the models
+
+### etc
+
+Prisma is fine for simple queries, but there are performance issues for complex queries. So, I will use it for db schema management. mysql2 will be used for db queries.
