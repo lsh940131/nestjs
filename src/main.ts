@@ -14,9 +14,27 @@ async function bootstrap() {
 		}),
 	);
 
-	const config = new DocumentBuilder().setTitle("Swagger 타이틀").setDescription("Swagger description").setVersion("서버 버전").build();
+	const config = new DocumentBuilder()
+		.setTitle("Swagger 타이틀")
+		.setDescription("Swagger description")
+		.setVersion("서버 버전")
+		.addBearerAuth(
+			{
+				type: "http",
+				scheme: "bearer",
+				bearerFormat: "JWT",
+				name: "JWT",
+				in: "header",
+			},
+			"token",
+		)
+		.addSecurityRequirements("token")
+		.build();
 	const document = SwaggerModule.createDocument(app, config);
-	SwaggerModule.setup("docs", app, document);
+	const option = {
+		customSiteTitle: "Nest boilerplate",
+	};
+	SwaggerModule.setup("/docs", app, document, option);
 
 	await app.listen(SERVER.port);
 }
