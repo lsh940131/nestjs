@@ -1,3 +1,7 @@
+const SERVER = {
+	port: process.env.SERVER_PORT,
+};
+
 const MYSQL_POOL_OPTION = {
 	connectionLimit: process.env.MYSQL_CONNECTIONLIMIT,
 	host: process.env.MSQYL_HOST,
@@ -12,6 +16,7 @@ const SWAGGER_USERS = {
 };
 
 module.exports = {
+	SERVER,
 	MYSQL_POOL_OPTION,
 	SWAGGER_USERS,
 };

@@ -2,7 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./v1/app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import * as expressBasicAuth from "express-basic-auth";
-import { SWAGGER_USERS } from "../env.js";
+import { SERVER, SWAGGER_USERS } from "../env.js";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -18,6 +18,6 @@ async function bootstrap() {
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup("docs", app, document);
 
-	await app.listen(3000);
+	await app.listen(SERVER.port);
 }
 bootstrap();
