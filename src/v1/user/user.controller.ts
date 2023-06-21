@@ -20,7 +20,7 @@ export class UserController {
 
 	@Get("/")
 	@ApiOperation({ summary: "유저 조회", description: "유저 조회" })
-	@ApiCreatedResponse({ description: "유저 조회", type: Object })
+	@ApiCreatedResponse({ description: "유저 조회", type: UserReadDto })
 	async getUser(@Query() query: UserReadDto): Promise<Object> {
 		const tx = await this.mysql.getTransaction();
 
