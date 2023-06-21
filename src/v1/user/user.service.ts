@@ -3,11 +3,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 import { ConfigService } from "@nestjs/config";
 @Injectable()
 export class UserService {
-	constructor(private readonly config: ConfigService) {
-		// console.log(process.env);
-		// console.log(process.env.PRISMA_DATABASE_URL);
-		// console.log(config.get("PRISMA_DATABASE_URL"));
-	}
+	constructor(private readonly config: ConfigService) {}
 
 	async create({ email, name }): Promise<number> {
 		const prisma = new PrismaClient();
