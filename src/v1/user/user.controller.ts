@@ -1,10 +1,11 @@
 import { Controller, Post, Get, Body, UseInterceptors, Query } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { ApiOperation, ApiCreatedResponse } from "@nestjs/swagger";
+import { ApiOperation, ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { UserCreateDto, UserReadDto } from "../../dto";
 import { ConfigService } from "@nestjs/config";
 import { Mysql } from "../../lib/db/mysql";
 @Controller("user")
+@ApiTags("user")
 export class UserController {
 	constructor(private readonly userService: UserService, private readonly config: ConfigService, private mysql: Mysql) {}
 

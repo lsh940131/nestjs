@@ -4,7 +4,9 @@ import { GalleryService } from "./gallery.service";
 import { multerOptions } from "../../config/multer.option";
 import { MulterInterceptor } from "../../interceptor";
 import { TypedRoute } from "@nestia/core";
+import { ApiTags } from "@nestjs/swagger";
 @Controller("gallery")
+@ApiTags("gallery")
 export class GalleryController {
 	constructor(private readonly galleryService: GalleryService) {}
 
