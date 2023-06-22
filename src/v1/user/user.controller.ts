@@ -3,14 +3,11 @@ import { UserService } from "./user.service";
 import { ApiOperation, ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { UserCreateDto, UserReadDto } from "../../dto";
 import { ConfigService } from "@nestjs/config";
-// import { Mysql } from "../../lib/db/mysql";
+import { getTransaction } from "../../lib/db/mysql";
 @Controller("user")
 @ApiTags("user")
 export class UserController {
-	constructor(
-		private readonly userService: UserService,
-		private readonly config: ConfigService, // private mysql: Mysql
-	) {}
+	constructor(private readonly userService: UserService, private readonly config: ConfigService) {}
 
 	@Post("/")
 	@ApiOperation({ summary: "유저 생성", description: "유저 생성" })
@@ -26,13 +23,13 @@ export class UserController {
 	@ApiOperation({ summary: "유저 조회", description: "유저 조회" })
 	@ApiCreatedResponse({ description: "유저 조회", type: UserReadDto })
 	async getUser(@Query() query: UserReadDto): Promise<Object> {
-		// const tx = await this.mysql.getTransaction();
+		const tx = await getTransaction();
 
-		// const r = await tx.query("select * from user");
-		// console.log(r);
+		const r = await tx.query("select * from user");
+		console.log(r);
 
-		// await tx.commit();
-		// await tx.release();
+		await tx.commit();
+		await tx.release();
 
 		// const result = await this.userService.get(query);
 

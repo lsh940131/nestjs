@@ -5,6 +5,7 @@ import { multerOptions } from "../../config/multer.option";
 import { MulterInterceptor } from "../../interceptor";
 import { TypedRoute } from "@nestia/core";
 import { ApiTags } from "@nestjs/swagger";
+// import { query } from "../../lib/db/mysql";
 @Controller("gallery")
 @ApiTags("gallery")
 export class GalleryController {
@@ -44,9 +45,12 @@ export class GalleryController {
 
 	@TypedRoute.Post("/upload/test/single")
 	@UseInterceptors(new MulterInterceptor().single({ name: "image", filter: ["jpg", "jpeg"] }))
-	public testSingle(@Request() req, @Body() body) {
+	public async testSingle(@Request() req, @Body() body) {
 		console.log(" >> controller");
 		console.log(body);
+
+		// const r = await query("select * from user");
+		// console.log(r);
 
 		return true;
 	}
