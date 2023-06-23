@@ -5,11 +5,11 @@ import { multerOptions } from "../../config/multer.option";
 import { MulterInterceptor } from "../../interceptor";
 import { TypedRoute } from "@nestia/core";
 import { ApiTags } from "@nestjs/swagger";
-// import { query } from "../../lib/db/mysql";
+import { MysqlService } from "../../lib/db/mysql/mysql.service";
 @Controller("gallery")
 @ApiTags("gallery")
 export class GalleryController {
-	constructor(private readonly galleryService: GalleryService) {}
+	constructor(private readonly galleryService: GalleryService, private readonly db: MysqlService) {}
 
 	@Post("/upload/single")
 	@UseInterceptors(FileInterceptor("file", multerOptions))
@@ -49,8 +49,16 @@ export class GalleryController {
 		console.log(" >> controller");
 		console.log(body);
 
-		// const r = await query("select * from user");
-		// console.log(r);
+		const conn = await this.db.getConnection();
+
+		await this.db.transaction(conn);
+
+		const result = await this.db.execute({
+			conn,
+			sql: `select * from user`,
+			value: [1],
+		});
+		console.log(result);
 
 		return true;
 	}
