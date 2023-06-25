@@ -49,16 +49,16 @@ export class GalleryController {
 		console.log(" >> controller");
 		console.log(body);
 
-		const conn = await this.db.getConnection();
+		// const conn = await this.db.getConnection();
 
-		await this.db.transaction(conn);
+		// await this.db.transaction(conn);
 
-		const result = await this.db.execute({
-			conn,
-			sql: `select * from user`,
-			value: [1],
-		});
-		console.log(result);
+		// const result = await this.db.execute({
+		// 	conn,
+		// 	sql: `select * from user`,
+		// 	value: [1],
+		// });
+		// console.log(result);
 
 		return true;
 	}

@@ -18,8 +18,8 @@ export class UserController {
 
 		const { email, name } = body;
 		const conn1 = await this.db.getConnection();
-		await this.db.transaction(conn1);
-		const [r1] = await conn1.query({ conn: conn1, sql: "insert into user set email='abcde', name='abc'", value: { email, name } });
+		await conn1.beginTransaction();
+		const [r1] = await conn1.query("insert into user set ?", [{ email, name }]);
 		console.log(r1.insertId);
 
 		console.time("process");
@@ -44,16 +44,8 @@ export class UserController {
 	@ApiOperation({ summary: "유저 조회", description: "유저 조회" })
 	@ApiCreatedResponse({ description: "유저 조회", type: UserReadDto })
 	async getUser(@Query() query: UserReadDto): Promise<Object> {
-		const conn = await this.db.getConnection();
-
-		await this.db.transaction(conn);
-
-		const result = await this.db.execute({
-			conn,
-			sql: `select * from user`,
-			value: [1],
-		});
-		console.log(result);
+		const r = await this.db.query("select * from user");
+		console.log(r);
 
 		return 1;
 	}
@@ -62,18 +54,20 @@ export class UserController {
 	@ApiOperation({ summary: "유저 조회", description: "유저 조회" })
 	@ApiCreatedResponse({ description: "유저 조회", type: Object })
 	async getUserQuery(@Query() query: UserReadDto): Promise<Object> {
-		// const result = await this.mysql.query("select * from user");
-		// console.log(result);
+		const [c1, c2] = await Promise.all([
+			this.db.getConnection().then(async (conn) => {
+				await conn.beginTransaction();
+				return conn;
+			}),
+			this.db.getConnection().then(async (conn) => {
+				await conn.beginTransaction();
+				return conn;
+			}),
+		]);
 
-		const conn1 = await this.db.getConnection();
-		const conn2 = await this.db.getConnection();
-
-		const [r1] = await conn1.query({ conn: conn1, sql: "SELECT CONNECTION_ID()" });
-		const [r2] = await conn2.query({ conn: conn2, sql: "SELECT CONNECTION_ID()" });
+		const [r1] = await c1.query("SELECT CONNECTION_ID();");
+		const [r2] = await c2.query("SELECT CONNECTION_ID();");
 		console.log(r1, r2);
-
-		conn1.release();
-		conn2.release();
 
 		return 1;
 	}
