@@ -3,6 +3,7 @@ import * as mysql from "mysql2/promise";
 import { CONFIG_OPTIONS } from "./common.constants";
 import { MySqlOptions } from "./interfaces/config.interface";
 import { QueryInterface } from "./interfaces/query.interface";
+import { ConnectionInterface } from "./interfaces/connection.interface";
 
 @Injectable()
 export class MysqlService {
@@ -11,7 +12,7 @@ export class MysqlService {
 	}
 	private pool: any;
 
-	getConnection(): Promise<any> {
+	getConnection(): Promise<ConnectionInterface> {
 		return this.pool.getConnection();
 	}
 
