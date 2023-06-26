@@ -17,8 +17,8 @@ export class UserController {
 		// const id = await this.userService.create(body);
 
 		const { email, name } = body;
-		const conn1 = await this.db.getConnection();
-		await conn1.beginTransaction();
+		const conn1 = await this.db.getTransaction();
+
 		const [r1] = await conn1.query("insert into user set ?", [{ email, name }]);
 		console.log(r1.insertId);
 
@@ -54,16 +54,7 @@ export class UserController {
 	@ApiOperation({ summary: "유저 조회", description: "유저 조회" })
 	@ApiCreatedResponse({ description: "유저 조회", type: Object })
 	async getUserQuery(@Query() query: UserReadDto): Promise<Object> {
-		const [c1, c2] = await Promise.all([
-			this.db.getConnection().then(async (conn) => {
-				await conn.beginTransaction();
-				return conn;
-			}),
-			this.db.getConnection().then(async (conn) => {
-				await conn.beginTransaction();
-				return conn;
-			}),
-		]);
+		const [c1, c2] = await Promise.all([this.db.getTransaction(), this.db.getTransaction()]);
 
 		const [r1] = await c1.query("SELECT CONNECTION_ID();");
 		const [r2] = await c2.query("SELECT CONNECTION_ID();");

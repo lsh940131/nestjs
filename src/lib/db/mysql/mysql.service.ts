@@ -3,7 +3,7 @@ import * as mysql from "mysql2/promise";
 import { CONFIG_OPTIONS } from "./common.constants";
 import { MySqlOptions } from "./interfaces/config.interface";
 import { QueryInterface } from "./interfaces/query.interface";
-import { ConnectionInterface } from "./interfaces/connection.interface";
+import { TransactionInterface } from "./interfaces/transaction.interface";
 
 @Injectable()
 export class MysqlService {
@@ -12,8 +12,11 @@ export class MysqlService {
 	}
 	private pool: any;
 
-	getConnection(): Promise<ConnectionInterface> {
-		return this.pool.getConnection();
+	async getTransaction(): Promise<TransactionInterface> {
+		const conn = await this.pool.getConnection();
+		await conn.beginTransaction();
+
+		return conn;
 	}
 
 	async query(sql: string, value?: any) {
