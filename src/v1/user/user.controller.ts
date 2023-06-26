@@ -19,7 +19,7 @@ export class UserController {
 		const { email, name } = body;
 		const conn1 = await this.db.getTransaction();
 
-		const [r1] = await conn1.query("insert into user set ?", [{ email, name }]);
+		const r1 = await conn1.query("insert into user set ?", [{ email, name }]);
 		console.log(r1.insertId);
 
 		console.time("process");
@@ -56,8 +56,8 @@ export class UserController {
 	async getUserQuery(@Query() query: UserReadDto): Promise<Object> {
 		const [c1, c2] = await Promise.all([this.db.getTransaction(), this.db.getTransaction()]);
 
-		const [r1] = await c1.query("SELECT CONNECTION_ID();");
-		const [r2] = await c2.query("SELECT CONNECTION_ID();");
+		const r1 = await c1.query("SELECT CONNECTION_ID();");
+		const r2 = await c2.query("SELECT CONNECTION_ID();");
 		console.log(r1, r2);
 
 		return 1;
