@@ -10,6 +10,8 @@ export class MysqlService {
 	private pool: any;
 
 	constructor(@Inject(CONFIG_OPTIONS) private readonly options: MySqlOptions) {
+		console.log(" >> mysql service");
+		console.log(options);
 		this.pool = mysql.createPool(options);
 	}
 

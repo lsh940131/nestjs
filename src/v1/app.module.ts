@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -10,7 +10,25 @@ import { MysqlModule } from "../lib/db/mysql/mysql.module";
 import { MYSQL_POOL_OPTION } from "../../env";
 
 @Module({
-	imports: [MysqlModule.forRoot(MYSQL_POOL_OPTION), ConfigModule.forRoot({ isGlobal: true, envFilePath: ".env" }), GalleryModule, UserModule],
+	imports: [
+		ConfigModule.forRoot({ isGlobal: true, envFilePath: ".env" }),
+		// MysqlModule.forRoot(MYSQL_POOL_OPTION),
+
+		MysqlModule.forRootAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: async (config: ConfigService) => ({
+				host: config.get<string>("MYSQL_HOST"),
+				port: config.get<number>("MYSQL_PORT"),
+				user: config.get<string>("MYSQL_USER"),
+				password: config.get<string>("MYSQL_PASSWORD"),
+				database: config.get<string>("MYSQL_DATABASE"),
+			}),
+		}),
+
+		UserModule,
+		GalleryModule,
+	],
 	controllers: [AppController],
 	providers: [AppService],
 })

@@ -1,1 +1,3 @@
-export const CONFIG_OPTIONS = "CONFIG_OPTIONS";
+export const MYSQL_MODULE_OPTIONS = "MysqlModuleOptions";
+export const MYSQL_CONNECTION = "MysqlConnection";
+export const CONFIG_OPTIONS = "MysqlConfigOptions";

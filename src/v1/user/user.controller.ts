@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseInterceptors, Query } from "@nestjs/common";
+import { Controller, Post, Get, Body, UseInterceptors, Query, Inject } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { ApiOperation, ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { UserCreateDto, UserReadDto } from "../../dto";
@@ -10,7 +10,11 @@ import { TypedRoute, TypedQuery, TypedBody } from "@nestia/core";
 @Controller("user")
 @ApiTags("user")
 export class UserController {
-	constructor(private readonly userService: UserService, private readonly config: ConfigService, private readonly db: MysqlService) {}
+	constructor(
+		private readonly userService: UserService,
+		private readonly config: ConfigService, // private readonly db: MysqlService
+		@Inject("MysqlConnection") private readonly db: MysqlService,
+	) {}
 
 	@TypedRoute.Post("/")
 	@ApiOperation({ summary: "유저 생성", description: "유저 생성" })
@@ -47,9 +51,9 @@ export class UserController {
 	@ApiOperation({ summary: "유저 조회", description: "유저 조회" })
 	@ApiCreatedResponse({ description: "유저 조회", type: UserReadDto })
 	async getUser(@TypedQuery() query: UserReadDto): Promise<any> {
-		const r = await this.db.query("select * from user");
+		// const r = await this.db.query("select * from user");
 
-		return r;
+		return 1;
 	}
 
 	@TypedRoute.Get("/query")

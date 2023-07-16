@@ -5,11 +5,13 @@ import { multerOptions } from "../../config/multer.option";
 import { MulterInterceptor } from "../../interceptor";
 import { TypedRoute } from "@nestia/core";
 import { ApiTags } from "@nestjs/swagger";
-import { MysqlService } from "../../lib/db/mysql/mysql.service";
+// import { MysqlService } from "../../lib/db/mysql/mysql.service";
 @Controller("gallery")
 @ApiTags("gallery")
 export class GalleryController {
-	constructor(private readonly galleryService: GalleryService, private readonly db: MysqlService) {}
+	constructor(
+		private readonly galleryService: GalleryService, // private readonly db: MysqlService
+	) {}
 
 	@Post("/upload/single")
 	@UseInterceptors(FileInterceptor("file", multerOptions))
