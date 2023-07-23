@@ -7,13 +7,10 @@ import { AppService } from "./app.service";
 import { GalleryModule } from "./gallery/gallery.module";
 import { UserModule } from "./user/user.module";
 import { MysqlModule } from "../lib/db/mysql/mysql.module";
-import { MYSQL_POOL_OPTION } from "../../env";
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true, envFilePath: ".env" }),
-		// MysqlModule.forRoot(MYSQL_POOL_OPTION),
-
 		MysqlModule.forRootAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
@@ -25,7 +22,6 @@ import { MYSQL_POOL_OPTION } from "../../env";
 				database: config.get<string>("MYSQL_DATABASE"),
 			}),
 		}),
-
 		UserModule,
 		GalleryModule,
 	],
