@@ -51,7 +51,8 @@ export class UserController {
 	@ApiOperation({ summary: "유저 조회", description: "유저 조회" })
 	@ApiCreatedResponse({ description: "유저 조회", type: UserReadDto })
 	async getUser(@TypedQuery() query: UserReadDto): Promise<any> {
-		// const r = await this.db.query("select * from user");
+		const r = await this.db.query("select * from user");
+		console.log(r);
 
 		return 1;
 	}

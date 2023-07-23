@@ -1,16 +1,17 @@
-import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, Body, Request, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from "@nestjs/common";
+import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, Body, Request, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Inject } from "@nestjs/common";
 import { FileInterceptor, FileFieldsInterceptor } from "@nestjs/platform-express";
 import { GalleryService } from "./gallery.service";
 import { multerOptions } from "../../config/multer.option";
 import { MulterInterceptor } from "../../interceptor";
 import { TypedRoute } from "@nestia/core";
 import { ApiTags } from "@nestjs/swagger";
-// import { MysqlService } from "../../lib/db/mysql/mysql.service";
+import { MysqlService } from "../../lib/db/mysql/mysql.service";
 @Controller("gallery")
 @ApiTags("gallery")
 export class GalleryController {
 	constructor(
 		private readonly galleryService: GalleryService, // private readonly db: MysqlService
+		@Inject("MysqlConnection") private readonly db: MysqlService,
 	) {}
 
 	@Post("/upload/single")
@@ -50,6 +51,9 @@ export class GalleryController {
 	public async testSingle(@Request() req, @Body() body) {
 		console.log(" >> controller");
 		console.log(body);
+
+		const result = await this.db.query("select * from user");
+		console.log(result);
 
 		// const conn = await this.db.getConnection();
 
