@@ -37,12 +37,9 @@ export interface MysqlOptionsFactory {
 	createMysqlOptions(): Promise<MySqlOptions> | MySqlOptions;
 }
 
-export type MysqlModuleFactoryOptions = Omit<MySqlOptions, "connectionName">;
-
 export interface MysqlAsyncOptions extends Pick<ModuleMetadata, "imports"> {
-	connectionName?: string;
 	useExisting?: Type<MysqlOptionsFactory>;
 	useClass?: Type<MysqlOptionsFactory>;
-	useFactory?: (...args: any[]) => Promise<MysqlModuleFactoryOptions> | MysqlModuleFactoryOptions;
+	useFactory?: (...args: any[]) => Promise<MySqlOptions> | MySqlOptions;
 	inject?: any[];
 }

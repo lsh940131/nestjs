@@ -67,6 +67,9 @@ export class UserController {
 		const r2 = await c2.query("SELECT CONNECTION_ID();");
 		console.log(r1, r2);
 
+		c1.release();
+		c2.release();
+
 		return 1;
 	}
 }
