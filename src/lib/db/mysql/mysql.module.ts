@@ -1,5 +1,4 @@
 import { DynamicModule, Global, Module, Provider, Type } from "@nestjs/common";
-import { ModuleRef } from "@nestjs/core";
 
 import { MYSQL_MODULE_OPTIONS, CONFIG_OPTIONS, MYSQL_CONNECTION } from "./common.constants";
 import { MySqlOptions, MysqlAsyncOptions, MysqlOptionsFactory } from "./interfaces/config.interface";
@@ -8,7 +7,7 @@ import { MysqlService } from "./mysql.service";
 @Module({})
 @Global()
 export class MysqlModule {
-	constructor(private readonly moduleRef: ModuleRef) {}
+	constructor() {}
 
 	static forRoot(options: MySqlOptions): DynamicModule {
 		return {
