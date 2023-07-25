@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
+import { PoolConnection } from "mysql2/promise";
 
 @Injectable({ scope: 2 })
 export class Transaction {
-	private conn;
+	private conn: PoolConnection;
 
-	constructor(conn) {
+	constructor(conn: PoolConnection) {
 		this.conn = conn;
 	}
 

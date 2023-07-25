@@ -1,7 +1,7 @@
 import { DynamicModule, Global, Module, Provider, Type } from "@nestjs/common";
 
 import { MYSQL_MODULE_OPTIONS, MYSQL_OPTIONS } from "./mysql.constants";
-import { MySqlOptions, MysqlAsyncOptions, MysqlOptionsFactory } from "./interfaces/config.interface";
+import { IMySqlOptions, IMysqlAsyncOptions, IMysqlOptionsFactory } from "./interfaces/config.interface";
 import { MysqlProvider } from "./mysql.provider";
 
 @Global()
@@ -9,7 +9,7 @@ import { MysqlProvider } from "./mysql.provider";
 export class MysqlModule {
 	constructor() {}
 
-	static forRoot(options: MySqlOptions): DynamicModule {
+	static forRoot(options: IMySqlOptions): DynamicModule {
 		return {
 			module: MysqlModule,
 			providers: [
@@ -23,11 +23,11 @@ export class MysqlModule {
 		};
 	}
 
-	static forRootAsync(options: MysqlAsyncOptions): DynamicModule {
+	static forRootAsync(options: IMysqlAsyncOptions): DynamicModule {
 		const provider: Provider = {
 			inject: [MYSQL_MODULE_OPTIONS],
 			provide: MYSQL_OPTIONS,
-			useFactory: async (options: MySqlOptions) => new MysqlProvider(options),
+			useFactory: async (options: IMySqlOptions) => new MysqlProvider(options),
 		};
 
 		return {
@@ -38,12 +38,12 @@ export class MysqlModule {
 		};
 	}
 
-	private static createAsyncProviders(options: MysqlAsyncOptions): Provider[] {
+	private static createAsyncProviders(options: IMysqlAsyncOptions): Provider[] {
 		if (options.useExisting || options.useFactory) {
 			return [this.createAsyncOptionsProvider(options)];
 		}
 
-		const useClass = options.useClass as Type<MysqlOptionsFactory>;
+		const useClass = options.useClass as Type<IMysqlOptionsFactory>;
 
 		return [
 			this.createAsyncOptionsProvider(options),
@@ -54,7 +54,7 @@ export class MysqlModule {
 		];
 	}
 
-	private static createAsyncOptionsProvider(options: MysqlAsyncOptions): Provider {
+	private static createAsyncOptionsProvider(options: IMysqlAsyncOptions): Provider {
 		if (options.useFactory) {
 			return {
 				provide: MYSQL_MODULE_OPTIONS,
@@ -63,11 +63,11 @@ export class MysqlModule {
 			};
 		}
 
-		const inject = [(options.useClass || options.useExisting) as Type<MysqlOptionsFactory>];
+		const inject = [(options.useClass || options.useExisting) as Type<IMysqlOptionsFactory>];
 
 		return {
 			provide: MYSQL_MODULE_OPTIONS,
-			useFactory: async (optionsFactory: MysqlOptionsFactory) => await optionsFactory.createMysqlOptions(),
+			useFactory: async (optionsFactory: IMysqlOptionsFactory) => await optionsFactory.createMysqlOptions(),
 			inject,
 		};
 	}

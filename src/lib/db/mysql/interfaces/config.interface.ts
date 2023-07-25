@@ -1,7 +1,7 @@
 import { ModuleMetadata, Type } from "@nestjs/common";
 
 // https://github.com/mysqljs/mysql
-export interface MySqlOptions {
+export interface IMySqlOptions {
 	host?: string;
 	port?: number;
 	user?: string;
@@ -33,13 +33,13 @@ export interface MySqlOptions {
 	connectionLimit?: number;
 }
 
-export interface MysqlOptionsFactory {
-	createMysqlOptions(): Promise<MySqlOptions> | MySqlOptions;
+export interface IMysqlOptionsFactory {
+	createMysqlOptions(): Promise<IMySqlOptions> | IMySqlOptions;
 }
 
-export interface MysqlAsyncOptions extends ModuleMetadata {
-	useExisting?: Type<MysqlOptionsFactory>;
-	useClass?: Type<MysqlOptionsFactory>;
-	useFactory?: (...args: any[]) => Promise<MySqlOptions> | MySqlOptions;
+export interface IMysqlAsyncOptions extends ModuleMetadata {
+	useExisting?: Type<IMysqlOptionsFactory>;
+	useClass?: Type<IMysqlOptionsFactory>;
+	useFactory?: (...args: any[]) => Promise<IMySqlOptions> | IMySqlOptions;
 	inject?: any[];
 }

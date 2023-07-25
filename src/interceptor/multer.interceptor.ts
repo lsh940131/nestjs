@@ -5,7 +5,7 @@ import { existsSync, mkdirSync, unlink } from "fs";
 import * as multer from "multer";
 import { extname } from "path";
 
-interface option {
+interface IMulterOptions {
 	name: string;
 	maxCount?: number;
 	filter?: string[];
@@ -20,7 +20,7 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 	private uploadPath: string = "uploads";
 	private uploader: RequestHandler;
 	private uploaderType: string;
-	private options: option[];
+	private options: IMulterOptions[];
 
 	constructor() {}
 
@@ -30,7 +30,7 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		}
 	}
 
-	single(option: option) {
+	single(option: IMulterOptions) {
 		this.uploaderType = "single";
 		this.options = [option];
 
@@ -42,7 +42,7 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		return this;
 	}
 
-	array(option: option) {
+	array(option: IMulterOptions) {
 		this.uploaderType = "array";
 		this.options = [option];
 
@@ -54,7 +54,7 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		return this;
 	}
 
-	fields(options: option[]) {
+	fields(options: IMulterOptions[]) {
 		this.uploaderType = "fields";
 		this.options = options;
 
@@ -66,7 +66,7 @@ export class MulterInterceptor implements NestInterceptor, OnModuleInit {
 		return this;
 	}
 
-	private fileFilter(options: option[]) {
+	private fileFilter(options: IMulterOptions[]) {
 		return (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
 			const [option] = options.filter((option) => option.name == file.fieldname);
 			if (option?.filter) {

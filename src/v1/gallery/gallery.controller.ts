@@ -11,7 +11,7 @@ import { InjectMysql, MysqlProvider } from "../../lib/db/mysql";
 export class GalleryController {
 	constructor(
 		private readonly galleryService: GalleryService, // private readonly db: MysqlProvider
-		// @Inject("MysqlOptions") private readonly db: MysqlProvider,
+		// @Inject("IMySqlOptions") private readonly db: MysqlProvider,
 		@InjectMysql() private readonly db: MysqlProvider,
 	) {}
 
