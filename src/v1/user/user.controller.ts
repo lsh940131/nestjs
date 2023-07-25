@@ -3,7 +3,7 @@ import { UserService } from "./user.service";
 import { ApiOperation, ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { UserCreateDto, UserReadDto } from "../../dto";
 import { ConfigService } from "@nestjs/config";
-import { MysqlService } from "../../lib/db/mysql/mysql.service";
+import { InjectMysql, MysqlProvider } from "../../lib/db/mysql";
 
 import { TypedRoute, TypedQuery, TypedBody } from "@nestia/core";
 
@@ -12,8 +12,8 @@ import { TypedRoute, TypedQuery, TypedBody } from "@nestia/core";
 export class UserController {
 	constructor(
 		private readonly userService: UserService,
-		private readonly config: ConfigService, // private readonly db: MysqlService
-		@Inject("MysqlConnection") private readonly db: MysqlService,
+		private readonly config: ConfigService, // private readonly db: MysqlProvider
+		@InjectMysql() private readonly db: MysqlProvider,
 	) {}
 
 	@TypedRoute.Post("/")

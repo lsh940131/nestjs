@@ -1,11 +1,11 @@
 import { DynamicModule, Global, Module, Provider, Type } from "@nestjs/common";
 
-import { MYSQL_MODULE_OPTIONS, CONFIG_OPTIONS, MYSQL_CONNECTION } from "./common.constants";
+import { MYSQL_MODULE_OPTIONS, MYSQL_OPTIONS } from "./mysql.constants";
 import { MySqlOptions, MysqlAsyncOptions, MysqlOptionsFactory } from "./interfaces/config.interface";
-import { MysqlService } from "./mysql.service";
+import { MysqlProvider } from "./mysql.provider";
 
-@Module({})
 @Global()
+@Module({})
 export class MysqlModule {
 	constructor() {}
 
@@ -14,20 +14,20 @@ export class MysqlModule {
 			module: MysqlModule,
 			providers: [
 				{
-					provide: CONFIG_OPTIONS,
+					provide: MYSQL_OPTIONS,
 					useValue: options,
 				},
-				MysqlService,
+				MysqlProvider,
 			],
-			exports: [MysqlService],
+			exports: [MysqlProvider],
 		};
 	}
 
 	static forRootAsync(options: MysqlAsyncOptions): DynamicModule {
 		const provider: Provider = {
 			inject: [MYSQL_MODULE_OPTIONS],
-			provide: MYSQL_CONNECTION,
-			useFactory: async (options: MySqlOptions) => new MysqlService(options),
+			provide: MYSQL_OPTIONS,
+			useFactory: async (options: MySqlOptions) => new MysqlProvider(options),
 		};
 
 		return {

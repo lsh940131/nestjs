@@ -1,14 +1,15 @@
 import { Inject, Injectable } from "@nestjs/common";
 import * as mysql from "mysql2/promise";
-import { CONFIG_OPTIONS } from "./common.constants";
+import { MYSQL_OPTIONS } from "./mysql.constants";
 import { MySqlOptions } from "./interfaces/config.interface";
+import { Transaction } from "./mysql.transaction";
 import { TransactionInterface } from "./interfaces/transaction.interface";
 
 @Injectable()
-export class MysqlService {
+export class MysqlProvider {
 	private pool: any;
 
-	constructor(@Inject(CONFIG_OPTIONS) private readonly options: MySqlOptions) {
+	constructor(@Inject(MYSQL_OPTIONS) private readonly options: MySqlOptions) {
 		this.pool = mysql.createPool(options);
 	}
 
@@ -31,36 +32,5 @@ export class MysqlService {
 		const [result] = await this.pool.execute(sql, value);
 
 		return result;
-	}
-}
-
-@Injectable({ scope: 2 })
-class Transaction {
-	private conn;
-
-	constructor(conn) {
-		this.conn = conn;
-	}
-
-	async beginTransaction(): Promise<any> {
-		await this.conn.beginTransaction();
-	}
-
-	async query(sql: string, value?: any) {
-		const [result] = await this.conn.query(sql, value);
-
-		return result;
-	}
-
-	commit(): Promise<any> {
-		return this.conn.commit();
-	}
-
-	rollback(): Promise<any> {
-		return this.conn.rollback();
-	}
-
-	release(): void {
-		return this.conn.release();
 	}
 }
