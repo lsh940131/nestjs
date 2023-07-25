@@ -12,8 +12,9 @@ import { TypedRoute, TypedQuery, TypedBody } from "@nestia/core";
 export class UserController {
 	constructor(
 		private readonly userService: UserService,
-		private readonly config: ConfigService, // private readonly db: MysqlProvider
-		@InjectMysql() private readonly db: MysqlProvider,
+		private readonly config: ConfigService,
+		// @InjectMysql() private readonly db: MysqlProvider,
+		private readonly db: MysqlProvider,
 	) {}
 
 	@TypedRoute.Post("/")
@@ -24,10 +25,10 @@ export class UserController {
 		// const id = await this.userService.create(body);
 
 		const { email, name } = body;
-		const conn1 = await this.db.getTransaction();
+		// const conn1 = await this.db.getTransaction();
 
-		const r1 = await conn1.query("insert into user set ?", [{ email, name }]);
-		console.log(r1.insertId);
+		// const r1 = await conn1.query("insert into user set ?", [{ email, name }]);
+		// console.log(r1.insertId);
 
 		// console.time("process");
 		// await new Promise((resolve, reject) => {
@@ -40,10 +41,11 @@ export class UserController {
 		// });
 		// console.timeEnd("process");
 		// console.log(">> commit");
-		await conn1.commit();
-		conn1.release();
+		// await conn1.commit();
+		// conn1.release();
 
-		const id = r1.insertId;
+		// const id = r1.insertId;
+		const id = 1;
 		return { id };
 	}
 
@@ -51,8 +53,8 @@ export class UserController {
 	@ApiOperation({ summary: "유저 조회", description: "유저 조회" })
 	@ApiCreatedResponse({ description: "유저 조회", type: UserReadDto })
 	async getUser(@TypedQuery() query: UserReadDto): Promise<any> {
-		const r = await this.db.query("select * from user");
-		console.log(r);
+		// const r = await this.db.query("select * from user");
+		// console.log(r);
 
 		return 1;
 	}

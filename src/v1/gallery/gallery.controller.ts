@@ -10,9 +10,8 @@ import { InjectMysql, MysqlProvider } from "../../lib/db/mysql";
 @ApiTags("gallery")
 export class GalleryController {
 	constructor(
-		private readonly galleryService: GalleryService, // private readonly db: MysqlProvider
-		// @Inject("IMySqlOptions") private readonly db: MysqlProvider,
-		@InjectMysql() private readonly db: MysqlProvider,
+		private readonly galleryService: GalleryService, // private readonly db: MysqlProvider // @Inject("IMySqlOptions") private readonly db: MysqlProvider,
+		private readonly db: MysqlProvider, // @InjectMysql() private readonly db: MysqlProvider,
 	) {}
 
 	@Post("/upload/single")
@@ -55,17 +54,6 @@ export class GalleryController {
 
 		const result = await this.db.query("select * from user");
 		console.log(result);
-
-		// const conn = await this.db.getConnection();
-
-		// await this.db.transaction(conn);
-
-		// const result = await this.db.execute({
-		// 	conn,
-		// 	sql: `select * from user`,
-		// 	value: [1],
-		// });
-		// console.log(result);
 
 		return true;
 	}
