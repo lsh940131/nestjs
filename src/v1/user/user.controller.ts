@@ -10,12 +10,7 @@ import { TypedRoute, TypedQuery, TypedBody } from "@nestia/core";
 @Controller("user")
 @ApiTags("user")
 export class UserController {
-	constructor(
-		private readonly userService: UserService,
-		private readonly config: ConfigService,
-		// @InjectMysql() private readonly db: MysqlProvider,
-		private readonly db: MysqlProvider,
-	) {}
+	constructor(private readonly userService: UserService, private readonly config: ConfigService, @InjectMysql() private readonly db: MysqlProvider) {}
 
 	@TypedRoute.Post("/")
 	@ApiOperation({ summary: "유저 생성", description: "유저 생성" })
