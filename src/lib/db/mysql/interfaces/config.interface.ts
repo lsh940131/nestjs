@@ -1,6 +1,6 @@
 import { ModuleMetadata, Type } from "@nestjs/common";
 
-export interface IMySqlOptions {
+export interface IOptions {
 	host?: string;
 	port?: number;
 	user?: string;
@@ -28,18 +28,20 @@ export interface IMySqlOptions {
 	dateStrings?: boolean;
 	decimalNumbers?: boolean;
 	connectionLimit?: number;
+}
 
+export interface IMysqlOptions extends IOptions {
 	tokenName?: string;
 }
 
 export interface IMysqlOptionsFactory {
-	createMysqlOptions(): Promise<IMySqlOptions> | IMySqlOptions;
+	createMysqlOptions(): Promise<IOptions> | IOptions;
 }
 
 export interface IMysqlAsyncOptions extends ModuleMetadata {
 	useExisting?: Type<IMysqlOptionsFactory>;
 	useClass?: Type<IMysqlOptionsFactory>;
-	useFactory?: (...args: any[]) => Promise<IMySqlOptions> | IMySqlOptions;
+	useFactory?: (...args: any[]) => Promise<IOptions> | IOptions;
 	inject?: any[];
 
 	tokenName?: string;
