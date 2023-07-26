@@ -13,7 +13,7 @@ export class UserController {
 	constructor(
 		private readonly userService: UserService,
 		private readonly config: ConfigService,
-		@InjectMysql("test2") private readonly db: MysqlProvider, // private readonly db: MysqlProvider,
+		@InjectMysql() private readonly db: MysqlProvider, // private readonly db: MysqlProvider,
 	) {}
 
 	@TypedRoute.Post("/")

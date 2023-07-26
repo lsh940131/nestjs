@@ -11,25 +11,17 @@ import { MysqlModule } from "../lib/db/mysql/mysql.module";
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true, envFilePath: ".env" }),
-		MysqlModule.forRoot({
-			host: "localhost",
-			port: 3306,
-			user: "root",
-			password: "admin",
-			database: "nest",
-			tokenName: "test2",
+		MysqlModule.forRootAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: async (config: ConfigService) => ({
+				host: config.get<string>("MYSQL_HOST"),
+				port: config.get<number>("MYSQL_PORT"),
+				user: config.get<string>("MYSQL_USER"),
+				password: config.get<string>("MYSQL_PASSWORD"),
+				database: config.get<string>("MYSQL_DATABASE"),
+			}),
 		}),
-		// MysqlModule.forRootAsync({
-		// 	imports: [ConfigModule],
-		// 	inject: [ConfigService],
-		// 	useFactory: async (config: ConfigService) => ({
-		// 		host: config.get<string>("MYSQL_HOST"),
-		// 		port: config.get<number>("MYSQL_PORT"),
-		// 		user: config.get<string>("MYSQL_USER"),
-		// 		password: config.get<string>("MYSQL_PASSWORD"),
-		// 		database: config.get<string>("MYSQL_DATABASE"),
-		// 	}),
-		// }),
 		UserModule,
 		GalleryModule,
 	],

@@ -41,5 +41,6 @@ export interface IMysqlAsyncOptions extends ModuleMetadata {
 	useClass?: Type<IMysqlOptionsFactory>;
 	useFactory?: (...args: any[]) => Promise<IMySqlOptions> | IMySqlOptions;
 	inject?: any[];
+
 	tokenName?: string;
 }
