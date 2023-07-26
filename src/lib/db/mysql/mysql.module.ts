@@ -11,16 +11,21 @@ export class MysqlModule {
 	constructor() {}
 
 	static forRoot(options: IMySqlOptions): DynamicModule {
+		const optionProvider: Provider = {
+			provide: MYSQL_MODULE_OPTIONS,
+			useValue: options,
+		};
+
+		const provider: Provider = {
+			inject: [MYSQL_MODULE_OPTIONS],
+			provide: getToken(options.tokenName),
+			useFactory: async (options: IMySqlOptions) => new MysqlProvider(options),
+		};
+
 		return {
 			module: MysqlModule,
-			providers: [
-				{
-					provide: MYSQL_DEFAULT_TOKEN_NAME,
-					useValue: options,
-				},
-				MysqlProvider,
-			],
-			exports: [MysqlProvider],
+			providers: [optionProvider, provider],
+			exports: [provider],
 		};
 	}
 

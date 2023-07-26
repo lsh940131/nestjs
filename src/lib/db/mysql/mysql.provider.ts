@@ -9,7 +9,7 @@ import { InjectMysql } from "./mysql.decorator";
 export class MysqlProvider {
 	private pool: Pool;
 
-	constructor(@InjectMysql() private readonly options: IMySqlOptions) {
+	constructor(private readonly options: IMySqlOptions) {
 		this.pool = createPool(options);
 	}
 

@@ -17,6 +17,7 @@ import { MysqlModule } from "../lib/db/mysql/mysql.module";
 			user: "root",
 			password: "admin",
 			database: "nest",
+			tokenName: "test2",
 		}),
 		// MysqlModule.forRootAsync({
 		// 	imports: [ConfigModule],
