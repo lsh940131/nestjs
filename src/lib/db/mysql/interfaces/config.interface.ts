@@ -1,13 +1,11 @@
 import { ModuleMetadata, Type } from "@nestjs/common";
 
-// https://github.com/mysqljs/mysql
 export interface IMySqlOptions {
 	host?: string;
 	port?: number;
 	user?: string;
 	password?: string;
 	database?: string;
-
 	charset?: string;
 	timezone?: string;
 	multipleStatements?: boolean;
@@ -24,13 +22,14 @@ export interface IMySqlOptions {
 	localInfile?: boolean;
 	flags?: any;
 	ssl?: any;
-
 	waitForConnections?: boolean;
 	queueLimit?: number;
 	connectTimeout?: number;
 	dateStrings?: boolean;
 	decimalNumbers?: boolean;
 	connectionLimit?: number;
+
+	tokenName?: string;
 }
 
 export interface IMysqlOptionsFactory {
@@ -42,4 +41,5 @@ export interface IMysqlAsyncOptions extends ModuleMetadata {
 	useClass?: Type<IMysqlOptionsFactory>;
 	useFactory?: (...args: any[]) => Promise<IMySqlOptions> | IMySqlOptions;
 	inject?: any[];
+	tokenName?: string;
 }

@@ -9,7 +9,11 @@ import { InjectMysql, MysqlProvider } from "../../lib/db/mysql";
 @Controller("gallery")
 @ApiTags("gallery")
 export class GalleryController {
-	constructor(private readonly galleryService: GalleryService, @InjectMysql() private readonly db: MysqlProvider) {}
+	constructor(
+		private readonly galleryService: GalleryService,
+		// @InjectMysql() private readonly db: MysqlProvider
+		private readonly db: MysqlProvider,
+	) {}
 
 	@Post("/upload/single")
 	@UseInterceptors(FileInterceptor("file", multerOptions))

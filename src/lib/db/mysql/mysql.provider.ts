@@ -1,14 +1,15 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Pool, PoolConnection, createPool } from "mysql2/promise";
-import { MYSQL_OPTIONS } from "./mysql.constants";
 import { Transaction } from "./mysql.transaction";
 import { IMySqlOptions, ITransaction } from "./interfaces";
+import { getToken } from "./mysql.util";
+import { InjectMysql } from "./mysql.decorator";
 
 @Injectable()
 export class MysqlProvider {
 	private pool: Pool;
 
-	constructor(@Inject(MYSQL_OPTIONS) private readonly options: IMySqlOptions) {
+	constructor(@InjectMysql() private readonly options: IMySqlOptions) {
 		this.pool = createPool(options);
 	}
 

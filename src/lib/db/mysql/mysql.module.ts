@@ -1,8 +1,9 @@
 import { DynamicModule, Global, Module, Provider, Type } from "@nestjs/common";
 
-import { MYSQL_MODULE_OPTIONS, MYSQL_OPTIONS } from "./mysql.constants";
+import { MYSQL_DEFAULT_TOKEN_NAME, MYSQL_MODULE_OPTIONS } from "./mysql.constants";
 import { IMySqlOptions, IMysqlAsyncOptions, IMysqlOptionsFactory } from "./interfaces/config.interface";
 import { MysqlProvider } from "./mysql.provider";
+import { getToken } from "./mysql.util";
 
 @Global()
 @Module({})
@@ -14,7 +15,7 @@ export class MysqlModule {
 			module: MysqlModule,
 			providers: [
 				{
-					provide: MYSQL_OPTIONS,
+					provide: MYSQL_DEFAULT_TOKEN_NAME,
 					useValue: options,
 				},
 				MysqlProvider,
@@ -26,7 +27,7 @@ export class MysqlModule {
 	static forRootAsync(options: IMysqlAsyncOptions): DynamicModule {
 		const provider: Provider = {
 			inject: [MYSQL_MODULE_OPTIONS],
-			provide: MYSQL_OPTIONS,
+			provide: getToken(options.tokenName),
 			useFactory: async (options: IMySqlOptions) => new MysqlProvider(options),
 		};
 

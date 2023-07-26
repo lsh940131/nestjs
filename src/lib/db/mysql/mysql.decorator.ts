@@ -1,4 +1,4 @@
 import { Inject } from "@nestjs/common";
-import { MYSQL_OPTIONS } from "./mysql.constants";
+import { getToken } from "./mysql.util";
 
-export const InjectMysql = (token: string = MYSQL_OPTIONS) => Inject(token);
+export const InjectMysql = (token?: string) => Inject(getToken(token));
