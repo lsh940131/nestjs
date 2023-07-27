@@ -5,6 +5,7 @@ import { Swagger } from "./lib/swagger";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
+	app.enableShutdownHooks();
 
 	const swagger = new Swagger(app);
 	swagger.setup();

@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnApplicationShutdown } from "@nestjs/common";
 import { Pool, PoolConnection, createPool } from "mysql2/promise";
 import { Transaction } from "./mysql.transaction";
 import { IOptions, ITransaction } from "./interfaces";
 
 @Injectable()
-export class MysqlProvider {
+export class MysqlProvider implements OnApplicationShutdown {
 	private pool: Pool;
 
 	constructor(private readonly options: IOptions) {
@@ -30,5 +30,11 @@ export class MysqlProvider {
 		const [result] = await this.pool.execute(sql, value);
 
 		return result;
+	}
+
+	onApplicationShutdown(signal?: string) {
+		if (this.pool) {
+			this.pool.end();
+		}
 	}
 }
