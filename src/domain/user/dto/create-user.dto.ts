@@ -17,5 +17,5 @@ export class CreateUserDto {
 	@ApiProperty({ required: true, description: "M: Man | W: Woman" })
 	@IsNotEmpty()
 	@ValidateItemInArray(["M", "W"])
-	readonly sex: string;
+	readonly gender: string;
 }

@@ -14,8 +14,8 @@ export class UserEntity {
 	@Column({ type: "varchar", name: "name", length: 100, nullable: false })
 	name: string;
 
-	@Column({ type: "char", name: "sex", length: 1, nullable: false, comment: "M | W" })
-	sex: string;
+	@Column({ type: "char", name: "gender", length: 1, nullable: false, comment: "M | W" })
+	gender: string;
 
 	@CreateDateColumn({
 		type: "datetime",
