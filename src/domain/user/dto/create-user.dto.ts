@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsEmail, IsString } from "class-validator";
-import { ValidateItemInArray } from "src/decorators/validator.itemInArray.decorator";
+import { ValidateOneOfArray } from "src/decorators/validator.oneOfArray.decorator";
 
 export class CreateUserDto {
 	@ApiProperty({ required: true, maxLength: 200 })
@@ -16,6 +16,6 @@ export class CreateUserDto {
 
 	@ApiProperty({ required: true, description: "M: Man | W: Woman" })
 	@IsNotEmpty()
-	@ValidateItemInArray(["M", "W"])
+	@ValidateOneOfArray(["M", "W"])
 	readonly gender: string;
 }

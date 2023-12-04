@@ -2,15 +2,15 @@ import { Type } from "@nestjs/common";
 import { ValidationOptions, registerDecorator } from "class-validator";
 
 /**
- * 특정값만 들어오게
+ * 제시된 배열로 유효성 검사
  * @param {Array<any>} conditions
- * @param {?ValidationOptions} [validationOptions]
+ * @param {ValidationOptions} [validationOptions]
  * @returns {(object: any, propertyName: string) => void}
  */
-export const ValidateItemInArray = (conditions: Array<any>, validationOptions?: ValidationOptions) => {
+export const ValidateOneOfArray = (conditions: Array<any>, validationOptions?: ValidationOptions): ((object: any, propertyName: string) => void) => {
 	return (object: Record<string, any>, propertyName: string) => {
 		registerDecorator({
-			name: "ValidateItemInArray",
+			name: "ValidateOneOfArray",
 			target: object.constructor,
 			propertyName: propertyName,
 			constraints: [],
