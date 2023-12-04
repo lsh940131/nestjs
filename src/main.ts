@@ -7,7 +7,7 @@ import * as expressBasicAuth from "express-basic-auth";
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	app.useGlobalPipes(new ValidationPipe({ transform: true, transformOptions: { enableImplicitConversion: true }, whitelist: true }));
-	app.use(["/api/docs"], expressBasicAuth({ challenge: true, users: { ["lsh"]: "940131" } }));
+	app.use(["/api/docs"], expressBasicAuth({ challenge: true, users: { ["root"]: "admin" } }));
 
 	const config = new DocumentBuilder().setTitle("API Document").setDescription("description").setVersion("0.1").build();
 	const document = SwaggerModule.createDocument(app, config);
