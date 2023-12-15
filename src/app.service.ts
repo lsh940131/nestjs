@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { ResponseModel } from "./model/common/response.model";
+import { ResponseDto } from "./common/dto/response.dto";
 
 @Injectable()
 export class AppService {
-	getHello(): ResponseModel {
-		const response = new ResponseModel();
+	getHello() {
+		const response = new ResponseDto();
 
 		response.data = "Hello World!";
 

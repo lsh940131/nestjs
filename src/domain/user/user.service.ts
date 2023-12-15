@@ -9,8 +9,10 @@ import { Repository } from "typeorm";
 export class UserService {
 	constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>) {}
 
-	create(createUserDto: CreateUserDto) {
-		return this.userRepository.insert(createUserDto);
+	async create(createUserDto: CreateUserDto) {
+		const result = await this.userRepository.insert(createUserDto);
+
+		return result?.identifiers;
 	}
 
 	findAll() {
