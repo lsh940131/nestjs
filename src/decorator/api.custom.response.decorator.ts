@@ -9,14 +9,7 @@ const API_MODEL_PROPERTIES = `${DECORATORS_PREFIX}/apiModelProperties`;
 const API_MODEL_PROPERTIES_ARRAY = `${DECORATORS_PREFIX}/apiModelPropertiesArray`;
 
 interface option {
-	/**
-	 * example title
-	 */
 	title: string;
-
-	/**
-	 * example description
-	 */
 	description: string;
 
 	/**
@@ -24,13 +17,12 @@ interface option {
 	 */
 	model: Type<any>;
 
-	/**
-	 * if you want to overwrite dto, use this
-	 */
-	value?: Record<string, any>;
+	data?: Record<string, any>;
+
+	error?: Record<string, any>;
 
 	/**
-	 * if you want to use generic type
+	 * generic type of data
 	 */
 	generic?: Type<any>;
 }
@@ -44,7 +36,9 @@ export const ApiCustomResponse = (statusCode: HttpStatus, options: option[]) => 
 			const DtoModel = o.model;
 			const dtoData = makeInstanceByApiProperty<typeof DtoModel>(DtoModel, o.generic);
 
-			responseInstance.data = o.value ? mergeObjects({}, dtoData, o.value) : dtoData;
+			responseInstance.statusCode = statusCode;
+			responseInstance.data = o.data ? mergeObjects({}, dtoData, o.data) : dtoData;
+			responseInstance.error = o.error ? mergeObjects({}, o.error) : null;
 
 			return {
 				[o.title]: {
@@ -59,9 +53,7 @@ export const ApiCustomResponse = (statusCode: HttpStatus, options: option[]) => 
 		}, {});
 
 	// swagger api response에 model 등록을 위함
-	const extraModel = options.map((o) => {
-		return o.model;
-	}) as unknown as Type[];
+	const extraModel = options.map((o) => o.model) as unknown as Type[];
 
 	// 중복값 제거
 	const setOfExtraModel = new Set(extraModel);
@@ -73,18 +65,18 @@ export const ApiCustomResponse = (statusCode: HttpStatus, options: option[]) => 
 	const extraGeneric = options.map((o) => o.generic).filter((i) => i) as unknown as Type[];
 	const pathOfGeneric = extraGeneric.map((e) => ({ $ref: getSchemaPath(e) }));
 
+	const oneOf = [...pathOfDto, ...pathOfGeneric];
+	const schemaKey = oneOf?.length > 1 ? "oneOf" : "$ref";
+	const schemaValue = schemaKey == "oneOf" ? oneOf : getSchemaPath(options[0].model);
+
 	return applyDecorators(
-		ApiExtraModels(...extraModel, ...extraGeneric, ResponseDto),
+		ApiExtraModels(...extraModel, ...extraGeneric),
 		ApiResponse({
 			status: statusCode,
 			content: {
 				"application/json": {
 					schema: {
-						// base schema
-						additionalProperties: {
-							$ref: getSchemaPath(ResponseDto),
-						},
-						oneOf: [...pathOfDto, ...pathOfGeneric],
+						[schemaKey]: schemaValue,
 					},
 					examples: examples,
 				},
@@ -126,11 +118,7 @@ function makeInstanceByApiProperty<T>(dtoClass: Type, generic?: Type): T {
 			case "string":
 			case "number":
 			case "primary":
-				if (typeof property.example !== "undefined") {
-					obj[property.fieldName] = property.example;
-				} else {
-					obj[property.fieldName] = property.description;
-				}
+				obj[property.fieldName] = property.default || property.example || property.description;
 				break;
 
 			case "lazy":

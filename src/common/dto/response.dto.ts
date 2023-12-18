@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { HttpStatus } from "@nestjs/common";
-const HTTP_STATUS_CODE = Object.keys(HttpStatus).map((k) => HttpStatus[k]);
+const HTTP_STATUS_CODE = Object.keys(HttpStatus)
+	.filter((i) => isNaN(Number(i)))
+	.map((k) => HttpStatus[k]);
 
 /**
  * 클라이언트 응답
