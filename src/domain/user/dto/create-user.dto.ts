@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsEmail, IsString } from "class-validator";
-import { ValidateOneOfArray } from "src/decorator/validator.oneOfArray.decorator";
+import { ValidateOneOfArray } from "src/common/decorator/validator-oneOfArray.decorator";
 
 export class CreateUserDto {
 	@ApiProperty({ required: true, maxLength: 200 })

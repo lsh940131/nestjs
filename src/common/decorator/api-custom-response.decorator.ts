@@ -7,6 +7,7 @@ import { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
 import { ResponseDto } from "src/common/dto/response.dto";
 import { mergeObjects } from "src/common/util/mergeObjects";
+import { IError } from "../interface/error.interface";
 
 const DECORATORS_PREFIX = "swagger";
 const API_MODEL_PROPERTIES = `${DECORATORS_PREFIX}/apiModelProperties`;
@@ -21,9 +22,11 @@ interface option {
 	 */
 	model: Type<any>;
 
+	statusCode?: number;
+
 	data?: Record<string, any>;
 
-	error?: Record<string, any>;
+	error?: IError;
 
 	/**
 	 * generic type of data
@@ -35,14 +38,14 @@ export const ApiCustomResponse = (statusCode: HttpStatus, options: option[]) => 
 	// swagger api의 example은 실제 값이 있는 instance여야 예시를 보여줄 수 있음
 	const examples = options
 		.map((o: option) => {
-			const responseInstance = makeInstanceByApiProperty<ResponseDto<any>>(ResponseDto);
+			const responseInstance = makeInstanceByApiProperty<ResponseDto>(ResponseDto);
 
-			const DtoModel = o.model;
-			const dtoData = makeInstanceByApiProperty<typeof DtoModel>(DtoModel, o.generic);
+			const dtoModel = o.model;
+			const dtoObj = makeInstanceByApiProperty<typeof dtoModel>(dtoModel, o.generic);
 
-			responseInstance.statusCode = statusCode;
-			responseInstance.data = o.data ? mergeObjects({}, dtoData, o.data) : dtoData;
-			responseInstance.error = o.error ? mergeObjects({}, o.error) : null;
+			responseInstance.statusCode = o.statusCode ?? statusCode;
+			responseInstance.data = o.data !== undefined ? o.data : dtoObj;
+			responseInstance.error = o.error;
 
 			return {
 				[o.title]: {
