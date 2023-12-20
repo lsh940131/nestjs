@@ -1,3 +1,7 @@
+/**
+ * Swagger API Document decorator
+ */
+
 import { HttpStatus, Type, applyDecorators } from "@nestjs/common";
 import { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
@@ -90,7 +94,7 @@ type ApiPropertyOptionsWithFieldName = ApiPropertyOptions & {
 };
 
 function makeInstanceByApiProperty<T>(dtoClass: Type, generic?: Type): T {
-	// class가 복수의 생성자를 가질 수 없고, 생성자 파라미터가 필수인 경우 대응하기 어렵기 때문에 dto 생성자로 만들지 않고 apiProperty로 지정한 필드들을 가져다 넣는 방식으로 진행
+	// 생성자 파라미터가 필수인 경우 대응하기 어렵기 때문에 dtoClass의 생성자로 만들지 않고 apiProperty로 지정한 필드들을 가져다 넣는 방식으로 진행
 	const obj = {};
 
 	const propertiesArr: string[] = Reflect.getMetadata(API_MODEL_PROPERTIES_ARRAY, dtoClass.prototype) || [];
