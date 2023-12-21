@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { HttpStatus } from "@nestjs/common";
-import { IError } from "../interface/error.interface";
+import { ErrorDto } from "./error.dto";
 const HTTP_STATUS_CODE = Object.keys(HttpStatus)
 	.filter((i) => isNaN(Number(i)))
 	.map((k) => HttpStatus[k]);
@@ -16,5 +16,5 @@ export class ResponseDto {
 	data: any;
 
 	@ApiProperty({ description: "에러가 났을 경우 참조", default: null })
-	error?: IError;
+	error?: ErrorDto;
 }

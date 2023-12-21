@@ -2,14 +2,14 @@ import { Controller, Get } from "@nestjs/common";
 import { ApiResponse } from "@nestjs/swagger";
 import { AppService } from "./app.service";
 import { ResponseDto } from "./common/dto/response.dto";
-import { ApiCustomResponse } from "./common/decorator/api-custom-response.decorator";
+import { CustomApiResponse } from "./common/decorator/custom-api-response";
 
 @Controller()
 export class AppController {
 	constructor(private readonly appService: AppService) {}
 
 	@Get()
-	@ApiCustomResponse(200, [
+	@CustomApiResponse(200, [
 		{
 			title: "응답 성공",
 			description: "응답 성공",

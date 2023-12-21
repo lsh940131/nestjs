@@ -4,7 +4,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ApiTags } from "@nestjs/swagger";
 import { CreateUserOkDto } from "./dto/create-user-ok.dto";
-import { ApiCustomResponse } from "../../common/decorator/api-custom-response.decorator";
+import { CustomApiResponse } from "../../common/decorator/custom-api-response";
 import { ResponseDto } from "../../common/dto/response.dto";
 
 @Controller("user")
@@ -13,7 +13,7 @@ export class UserController {
 	constructor(private readonly userService: UserService) {}
 
 	@Post()
-	@ApiCustomResponse(201, [
+	@CustomApiResponse(201, [
 		{
 			title: "유저 생성 성공",
 			description: "유저 생성 성공",

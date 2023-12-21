@@ -7,10 +7,10 @@ import { ValidationOptions, registerDecorator } from "class-validator";
  * @param {ValidationOptions} [validationOptions]
  * @returns {(object: any, propertyName: string) => void}
  */
-export const ValidateOneOfArray = (conditions: Array<any>, validationOptions?: ValidationOptions): ((object: any, propertyName: string) => void) => {
+export const ValidatorOneOfArray = (conditions: Array<any>, validationOptions?: ValidationOptions): ((object: any, propertyName: string) => void) => {
 	return (object: Record<string, any>, propertyName: string) => {
 		registerDecorator({
-			name: "ValidateOneOfArray",
+			name: "ValidatorOneOfArray",
 			target: object.constructor,
 			propertyName: propertyName,
 			constraints: [],

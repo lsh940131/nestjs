@@ -6,8 +6,7 @@ import { HttpStatus, Type, applyDecorators } from "@nestjs/common";
 import { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
 import { ResponseDto } from "src/common/dto/response.dto";
-import { mergeObjects } from "src/common/util/mergeObjects";
-import { IError } from "../interface/error.interface";
+import { ErrorDto } from "../dto/error.dto";
 
 const DECORATORS_PREFIX = "swagger";
 const API_MODEL_PROPERTIES = `${DECORATORS_PREFIX}/apiModelProperties`;
@@ -26,7 +25,7 @@ interface option {
 
 	data?: Record<string, any>;
 
-	error?: IError;
+	error?: ErrorDto;
 
 	/**
 	 * generic type of data
@@ -34,7 +33,7 @@ interface option {
 	generic?: Type<any>;
 }
 
-export const ApiCustomResponse = (statusCode: HttpStatus, options: option[]) => {
+export const CustomApiResponse = (statusCode: HttpStatus, options: option[]) => {
 	// swagger api의 example은 실제 값이 있는 instance여야 예시를 보여줄 수 있음
 	const examples = options
 		.map((o: option) => {
