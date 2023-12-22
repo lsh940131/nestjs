@@ -1,3 +1,4 @@
+// injectable class로 만들어서 DI를 이용해서 여러 domain에서 사용가능하도록 개선
 export const mergeObjects = <T extends object = object>(target: T, ...sources: T[]): T => {
 	if (!sources.length) {
 		return target;
