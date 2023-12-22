@@ -9,6 +9,12 @@ const HTTP_STATUS_CODE = Object.keys(HttpStatus)
  * 클라이언트 응답
  */
 export class ResponseDto {
+	constructor(statusCode?: number, data?: any, error?: ErrorDto) {
+		this.statusCode = statusCode;
+		this.data = data;
+		this.error = error;
+	}
+
 	@ApiProperty({ enum: HTTP_STATUS_CODE, description: "HTTP 상태 코드", default: 200 })
 	statusCode: number;
 

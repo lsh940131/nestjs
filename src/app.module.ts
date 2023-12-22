@@ -4,7 +4,8 @@ import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from "./domain/user/user.module";
 import * as path from "path";
-import { APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_FILTER } from "@nestjs/core";
+import { AllExceptionFilter } from "./common/filter/exception.filter";
 
 @Module({
 	imports: [
@@ -20,6 +21,12 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
 		UserModule,
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [
+		AppService,
+		{
+			provide: APP_FILTER,
+			useClass: AllExceptionFilter,
+		},
+	],
 })
 export class AppModule {}
