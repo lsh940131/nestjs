@@ -9,24 +9,21 @@ export class AppController {
 	constructor(private readonly appService: AppService) {}
 
 	@Get()
-	@CustomApiResponse(200, [
+	@CustomApiResponse(200, "응답 성공/에러 케이스", [
 		{
-			title: "응답 성공",
-			description: "응답 성공",
+			title: "성공",
 			model: ResponseDto,
 			data: {
 				id: 1,
 			},
 		},
 		{
-			title: "응답 실패",
-			description: "응답 실패",
+			title: "에러",
 			model: ResponseDto,
-			statusCode: 404,
 			data: null,
 			error: {
 				code: 1,
-				message: "Not found",
+				message: "Invalid input",
 			},
 		},
 	])

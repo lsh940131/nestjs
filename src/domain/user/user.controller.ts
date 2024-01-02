@@ -13,10 +13,9 @@ export class UserController {
 	constructor(private readonly userService: UserService) {}
 
 	@Post()
-	@CustomApiResponse(201, [
+	@CustomApiResponse(201, "유저 생성", [
 		{
-			title: "유저 생성 성공",
-			description: "유저 생성 성공",
+			title: "성공",
 			model: CreateUserOkDto,
 		},
 	])

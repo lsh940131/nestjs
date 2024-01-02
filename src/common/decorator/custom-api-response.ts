@@ -14,7 +14,7 @@ const API_MODEL_PROPERTIES_ARRAY = `${DECORATORS_PREFIX}/apiModelPropertiesArray
 
 interface option {
 	title: string;
-	description: string;
+	description?: string;
 
 	/**
 	 * dto
@@ -33,7 +33,7 @@ interface option {
 	generic?: Type<any>;
 }
 
-export const CustomApiResponse = (statusCode: HttpStatus, options: option[]) => {
+export const CustomApiResponse = (statusCode: HttpStatus, description: string, options: option[]) => {
 	// swagger api의 example은 실제 값이 있는 instance여야 예시를 보여줄 수 있음
 	const examples = options
 		.map((o: option) => {
@@ -42,9 +42,9 @@ export const CustomApiResponse = (statusCode: HttpStatus, options: option[]) => 
 			const dtoModel = o.model;
 			const dtoObj = makeInstanceByApiProperty<typeof dtoModel>(dtoModel, o.generic);
 
-			responseInstance.statusCode = o.statusCode ?? statusCode;
+			responseInstance.statusCode = o.statusCode !== undefined ? o.statusCode : 200;
 			responseInstance.data = o.data !== undefined ? o.data : dtoObj;
-			responseInstance.error = o.error;
+			responseInstance.error = o.error !== undefined ? o.error : null;
 
 			return {
 				[o.title]: {
@@ -87,6 +87,7 @@ export const CustomApiResponse = (statusCode: HttpStatus, options: option[]) => 
 					examples: examples,
 				},
 			},
+			description,
 		}),
 	);
 };
