@@ -5,7 +5,7 @@
 import { HttpStatus, Type, applyDecorators } from "@nestjs/common";
 import { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
-import { ResponseDto } from "src/common/dto/response.dto";
+import { ResponseDto } from "../dto/response.dto";
 import { ErrorDto } from "../dto/error.dto";
 
 const DECORATORS_PREFIX = "swagger";
