@@ -6,14 +6,12 @@ import * as path from "path";
 
 /**
  * Swagger 세팅
- *
  * @param {INestApplication} app
  */
 export function setupSwagger(app: INestApplication): void {
 	const swaggerRouter: string = "/api/docs";
 	const swaagerId: string = "root";
 	const swaggerPass: string = "admin";
-
 	const title: string = "API Document";
 	const version: string = "0.1";
 
