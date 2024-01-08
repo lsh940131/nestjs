@@ -10,12 +10,12 @@ import * as path from "path";
  */
 export function setupSwagger(app: INestApplication): void {
 	const swaggerRouter: string = "/api/docs";
-	const swaagerId: string = "root";
+	const swagger: string = "root";
 	const swaggerPass: string = "admin";
 	const title: string = "API Document";
 	const version: string = "0.1";
 
-	app.use([swaggerRouter], expressBasicAuth({ challenge: true, users: { [swaagerId]: swaggerPass } }));
+	app.use([swaggerRouter], expressBasicAuth({ challenge: true, users: { [swagger]: swaggerPass } }));
 	const description: string = readFileSync(path.join(__dirname, "./", "description.md"), "utf-8");
 	const config = new DocumentBuilder().setTitle(title).setDescription(description).setVersion(version).build();
 	const document = SwaggerModule.createDocument(app, config);
