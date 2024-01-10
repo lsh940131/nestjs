@@ -3,9 +3,11 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from "./domain/user/user.module";
-import * as path from "path";
 import { APP_FILTER } from "@nestjs/core";
 import { AllExceptionFilter } from "./common/filter/exception.filter";
+import { PrismaModule } from "./prisma/prisma.module";
+
+import { join } from "path";
 
 @Module({
 	imports: [
@@ -16,9 +18,10 @@ import { AllExceptionFilter } from "./common/filter/exception.filter";
 			username: "root",
 			password: "admin",
 			database: "nest",
-			entities: [path.join(__dirname, "./", "/domain/**/entities/*.entity.{ts,js}")],
+			entities: [join(__dirname, "./", "/domain/**/entities/*.entity.{ts,js}")],
 		}),
 		UserModule,
+		PrismaModule,
 	],
 	controllers: [AppController],
 	providers: [
