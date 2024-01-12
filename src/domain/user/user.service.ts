@@ -7,9 +7,15 @@ import { PrismaService } from "../../prisma/prisma.service";
 export class UserService {
 	constructor(private prisma: PrismaService) {}
 
-	async create(createUserDto: CreateUserDto) {}
+	async create(createUserDto: CreateUserDto) {
+		const result = await this.prisma.user.create({ data: createUserDto });
 
-	findAll() {}
+		return result?.id;
+	}
+
+	findAll() {
+		return this.prisma.user.findMany({ where: { deleted_at: null } });
+	}
 
 	findOne(id: number) {
 		return this.prisma.user.findUnique({
@@ -18,10 +24,10 @@ export class UserService {
 	}
 
 	update(id: number, updateUserDto: UpdateUserDto) {
-		return `This action updates a #${id} user`;
+		return this.prisma.user.update({ data: updateUserDto, where: { id } });
 	}
 
-	remove(id: number) {
-		return `This action removes a #${id} user`;
+	delete(id: number) {
+		return this.prisma.user.update({ data: { deleted_at: new Date() }, where: { id } });
 	}
 }

@@ -14,4 +14,5 @@ model user {
   gender     String   @db.Char(1)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
+  deleted_at DateTime?
 }
