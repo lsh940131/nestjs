@@ -42,13 +42,6 @@ export class UserController {
 		return { statusCode: 200, data };
 	}
 
-	@Get("prisma/:id")
-	async findOneByPrisma(@Param("id") id: string) {
-		const data = await this.userService.findOneByPrisma(+id);
-
-		return { statusCode: 200, data };
-	}
-
 	@Patch(":id")
 	update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
 		throw "error message";
