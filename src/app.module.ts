@@ -5,7 +5,7 @@ import { UserModule } from "./domain/user/user.module";
 import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 import { AllExceptionFilter } from "./common/filter/exception.filter";
 import { PrismaModule } from "./prisma/prisma.module";
-import { ResponseInterceptor } from "./interceptor/response.interceptor";
+import { ResponseInterceptor } from "./common/interceptor/response.interceptor";
 
 @Module({
 	imports: [UserModule, PrismaModule],
