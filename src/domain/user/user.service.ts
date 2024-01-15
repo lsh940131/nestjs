@@ -10,7 +10,7 @@ export class UserService {
 	async create(createUserDto: CreateUserDto) {
 		const result = await this.prisma.user.create({ data: createUserDto });
 
-		return result?.id;
+		return { id: result.id };
 	}
 
 	findAll() {

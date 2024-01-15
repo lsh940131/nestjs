@@ -2,11 +2,10 @@ import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "./domain/user/user.module";
-import { APP_FILTER } from "@nestjs/core";
+import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 import { AllExceptionFilter } from "./common/filter/exception.filter";
 import { PrismaModule } from "./prisma/prisma.module";
-
-import { join } from "path";
+import { ResponseInterceptor } from "./interceptor/response.interceptor";
 
 @Module({
 	imports: [UserModule, PrismaModule],
@@ -16,6 +15,10 @@ import { join } from "path";
 		{
 			provide: APP_FILTER,
 			useClass: AllExceptionFilter,
+		},
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: ResponseInterceptor,
 		},
 	],
 })

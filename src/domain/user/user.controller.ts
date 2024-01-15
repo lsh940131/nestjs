@@ -19,27 +19,18 @@ export class UserController {
 			model: CreateUserOkDto,
 		},
 	])
-	async create(@Body() createUserDto: CreateUserDto) {
-		const data = await this.userService.create(createUserDto);
-
-		return { statusCode: 201, data };
+	create(@Body() createUserDto: CreateUserDto) {
+		return this.userService.create(createUserDto);
 	}
 
 	@Get()
-	async findAll() {
-		const data = await this.userService.findAll();
-
-		const res = new ResponseDto();
-		res.statusCode = 200;
-		res.data = data;
-		return res;
+	findAll() {
+		return this.userService.findAll();
 	}
 
 	@Get(":id")
-	async findOne(@Param("id") id: string) {
-		const data = await this.userService.findOne(+id);
-
-		return { statusCode: 200, data };
+	findOne(@Param("id") id: string) {
+		return this.userService.findOne(+id);
 	}
 
 	@Put(":id")
